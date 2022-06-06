@@ -1,0 +1,54 @@
+apiVersion: kubeflow.org/v1beta1
+kind: Experiment
+metadata:
+  namespace: kubeflow-user-example-com
+  name: pytorch-mnist
+spec:
+  parallelTrialCount: 3
+  maxTrialCount: 6
+  maxFailedTrialCount: 3
+  objective:
+    type: minimize
+    goal: 0.01
+    objectiveMetricName: loss
+  algorithm:
+    algorithmName: random
+  parameters:
+    - name: lr
+      parameterType: double
+      feasibleSpace:
+        min: "0.01"
+        max: "0.05"
+    - name: momentum
+      parameterType: double
+      feasibleSpace:
+        min: "0.5"
+        max: "0.9"
+  trialTemplate:
+    primaryContainerName: pytorch
+    trialParameters:
+      - name: learningRate
+        description: Learning rate for the training model
+        reference: lr
+      - name: momentum
+        description: Momentum for the training model
+        reference: momentum
+    trialSpec:
+      apiVersion: batch/v1
+      kind: Job
+      spec:
+        template:
+          metadata:
+            annotations:
+              sidecar.istio.io/inject: "false"
+          spec:
+            containers:
+              - name: pytorch
+                image: docker.io/kubeflowkatib/pytorch-mnist:latest
+                command:
+                  - "python3"
+                  - "/opt/pytorch-mnist/mnist.py"
+                  - "--epochs=1"
+                  - "--lr=${trialParameters.learningRate}"
+                  - "--momentum=${trialParameters.momentum}"
+            restartPolicy: Never

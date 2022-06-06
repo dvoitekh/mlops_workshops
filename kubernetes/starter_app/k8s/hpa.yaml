@@ -1,0 +1,28 @@
+# kubectl run -i --tty --rm load-tester --image=busybox --restart=Never -- sh -c "while true; do wget -q -O- http://hello-service; done"
+# more details on hpa: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hello-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: helloweb
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 10
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
