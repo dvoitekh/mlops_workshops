@@ -3,7 +3,7 @@ name: Feast apply (AWS)
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   feast_apply:
@@ -25,7 +25,7 @@ jobs:
       # Run `feast apply`
       - uses: actions/checkout@v2
       - name: Install feast
-        run: pip install "feast[aws]"
+        run: pip install redis "feast[aws]"
       - name: Run feast apply
         env:
           FEAST_USAGE: "False"
