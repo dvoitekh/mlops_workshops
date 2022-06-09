@@ -22,7 +22,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-1
 
-      # Run `feast apply`
       - uses: actions/checkout@v2
       - name: Install feast
         run: pip install redis "feast[aws]"
