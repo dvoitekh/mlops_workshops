@@ -1,10 +1,14 @@
 name: Feast plan (AWS)
 
-on: [pull_request]
+on:
+  issue_comment:
+    types:
+      - created
 
 jobs:
   feast_plan:
     runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/feast_plan' }}
     steps:
       - name: Setup Python
         id: setup-python
@@ -30,16 +34,4 @@ jobs:
           FEAST_FORCE_USAGE_UUID: None
           IS_TEST: "True"
         run: |
-          body=$(cd kubeflow/feast/feature_store; feast plan)
-          body="${body//'%'/'%25'}"
-          body="${body//$'\n'/'%0A'}"
-          body="${body//$'\r'/'%0D'}"
-          echo "::set-output name=body::$body"
-      # Post a comment on the PR with the results of `feast plan`
-      - name: Create comment
-        uses: peter-evans/create-or-update-comment@v1
-        if: ${{ steps.feast_plan.outputs.body }}
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ${{ steps.feast_plan.outputs.body }}
+          cd kubeflow/feast/feature_store; feast plan
