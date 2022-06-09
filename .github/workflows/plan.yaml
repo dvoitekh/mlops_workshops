@@ -44,6 +44,6 @@ jobs:
         uses: peter-evans/create-or-update-comment@v1
         if: ${{ steps.feast_plan.outputs.body }}
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ github.event.issue.number }}
           body: |
             ${{ steps.feast_plan.outputs.body }}
