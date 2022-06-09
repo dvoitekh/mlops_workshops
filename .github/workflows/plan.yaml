@@ -7,8 +7,8 @@ on:
 
 jobs:
   feast_plan:
-    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/feast_plan' }}
     runs-on: ubuntu-latest
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/feast_plan' }}
     steps:
       - name: Setup Python
         id: setup-python
