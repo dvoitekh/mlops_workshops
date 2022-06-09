@@ -1,10 +1,13 @@
 name: Feast plan (AWS)
 
-on: [issue_comment]
+on:
+  issue_comment:
+    types:
+      - created
 
 jobs:
   feast_plan:
-    if: github.event.issue.pull_request != null && startsWith(github.event.comment.body, '/feast_plan')
+    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/feast_plan' }}
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
