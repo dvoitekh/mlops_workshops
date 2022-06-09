@@ -1,14 +1,10 @@
 name: Feast plan (AWS)
 
-on:
-  issue_comment:
-    types:
-      - created
+on: [pull_request]
 
 jobs:
   feast_plan:
     runs-on: ubuntu-latest
-    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/feast_plan' }}
     steps:
       - name: Setup Python
         id: setup-python
@@ -42,8 +38,8 @@ jobs:
       # Post a comment on the PR with the results of `feast plan`
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v1
+        if: ${{ steps.feast_plan.outputs.body }}
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ${{ steps.feast_plan.outputs.body }}
-
