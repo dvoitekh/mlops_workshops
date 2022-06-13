@@ -1,8 +1,6 @@
 # Local K8s cluster with Kubeflow, Seldon, and Feast (Ubuntu)
 
-1. install (docker)[https://docs.docker.com/engine/install/ubuntu/]
-
-    run as non-root user: https://docs.docker.com/engine/install/linux-postinstall
+1. install (docker)[https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04]
 
     increase max limit for open file descriptors: https://github.com/kubeflow/manifests/issues/2087#issuecomment-1101482095
 

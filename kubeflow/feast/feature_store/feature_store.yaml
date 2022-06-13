@@ -1,16 +1,8 @@
 project: feature_repo
-# registry: registry.pb
-# provider: local
-registry: s3://dvoitekh-kubeflow/registry.pb
+registry: s3://dvoitekh-kubeflow/feast/registry.pb
 provider: aws
 offline_store:
     type: file
 online_store:
     type: redis
     connection_string: "kf-feast-redis-master.feast.svc:6379"
-#     type: postgres
-#     host: kf-feast-postgresql.feast.svc
-#     port: 5432
-#     database: online_store
-#     user: postgres
-#     password: password

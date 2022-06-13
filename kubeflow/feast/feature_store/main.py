@@ -1,35 +1,54 @@
 # This is an example feature definition file
 
-from feast import Entity, FeatureService, FeatureView, Field, FileSource, ValueType
+from feast import Entity, FeatureService, FeatureView, Field, FileSource, PushSource, ValueType
 from feast.types import Float32, Int64
 
-# Read data from parquet files. Parquet is convenient for local development mode. For
-# production, you can use your favorite DWH, such as BigQuery. See Feast documentation
-# for more info.
-driver_hourly_stats = FileSource(
-    path="s3://dvoitekh-kubeflow/feast-data/test/driver_stats.parquet",
-    timestamp_field="event_timestamp",
-    created_timestamp_column="created",
+
+main_source = FileSource(
+    path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
+    timestamp_field="EventTimestamp",
+    created_timestamp_column="Created",
 )
 
-# Define an entity for the driver. You can think of entity as a primary key used to
-# fetch features.
-driver = Entity(name="driver", join_keys=["driver_id"], value_type=ValueType.INT64,)
+main_push_source = PushSource(
+    name="main_push_source", batch_source=main_source,
+)
 
-# Our parquet files contain sample data that includes a driver_id column, timestamps and
-# three feature column. Here we define a Feature View that will allow us to serve this
-# data to our model online.
-driver_hourly_stats_view = FeatureView(
-    name="driver_hourly_stats",
-    entities=["driver"],
+lat_lon_source = FileSource(
+    path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
+    timestamp_field="EventTimestamp",
+    created_timestamp_column="Created",
+)
+
+house_id = Entity(name="HouseId", join_keys=["HouseId"], value_type=ValueType.INT64,)
+
+house_main_view = FeatureView(
+    name="house_main_view",
+    entities=["HouseId"],
     schema=[
-        Field(name="conv_rate", dtype=Float32),
-        Field(name="acc_rate", dtype=Float32),
-        Field(name="avg_daily_trips", dtype=Int64),
+        Field(name="MedInc", dtype=Float32),
+        Field(name="HouseAge", dtype=Float32),
+        Field(name="AveRooms", dtype=Float32),
+        Field(name="AveBedrms", dtype=Float32),
+        Field(name="Population", dtype=Int64),
+        Field(name="AveOccup", dtype=Float32),
+        Field(name="MedHouseVal", dtype=Float32)
     ],
-    source=driver_hourly_stats
+    online=True,
+    source=main_push_source
 )
 
-driver_stats_fs = FeatureService(
-    name="driver_activity", features=[driver_hourly_stats_view]
+house_lat_lon_view = FeatureView(
+    name="house_lat_lon_view",
+    entities=["HouseId"],
+    schema=[
+        Field(name="Latitude", dtype=Float32),
+        Field(name="Longitude", dtype=Float32)
+    ],
+    online=True,
+    source=lat_lon_source
+)
+
+service = FeatureService(
+    name="house_service", features=[house_main_view, house_lat_lon_view]
 )

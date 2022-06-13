@@ -1,1 +1,1 @@
-feast[aws]
+feast[aws,redis]
