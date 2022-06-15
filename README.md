@@ -64,7 +64,7 @@ Open Kubeflow dashboard, create a new notebook. In the notebook clone this repo.
 
 ## Katib (hyper-parameter optimization)
 
-Get familiar with [Katib](https://docs.pachyderm.com/latest/deploy-manage/deploy/prometheus/).
+Get familiar with [Katib](https://www.kubeflow.org/docs/components/katib/hyperparameter).
 
 Go to [katib directory](kubeflow/katib/) and apply the basic mnist experiment:
 
