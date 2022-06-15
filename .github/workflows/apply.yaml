@@ -31,5 +31,5 @@ jobs:
           FEAST_USAGE: "False"
           IS_TEST: "True"
         run: |
-          cd kubeflow/feast/feature_store
+          cd feast/feature_store
           feast apply

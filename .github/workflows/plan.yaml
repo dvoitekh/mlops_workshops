@@ -30,7 +30,7 @@ jobs:
           FEAST_FORCE_USAGE_UUID: None
           IS_TEST: "True"
         run: |
-          body=$(cd kubeflow/feast/feature_store; feast plan)
+          body=$(cd feast/feature_store; feast plan)
           body="${body//'%'/'%25'}"
           body="${body//$'\n'/'%0A'}"
           body="${body//$'\r'/'%0D'}"
