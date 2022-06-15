@@ -1,6 +1,8 @@
 project: feature_repo
-registry: s3://dvoitekh-kubeflow/feast/registry.pb
-provider: aws
+# registry: s3://dvoitekh-kubeflow/feast/registry.pb
+# provider: aws
+provider: local
+registry: registry.pb
 offline_store:
     type: file
 online_store:

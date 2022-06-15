@@ -5,7 +5,8 @@ from feast.types import Float32, Int64
 
 
 main_source = FileSource(
-    path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
+    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
+    path="../data/house_dataset_main.parquet",
     timestamp_field="EventTimestamp",
     created_timestamp_column="Created",
 )
@@ -15,7 +16,8 @@ main_push_source = PushSource(
 )
 
 lat_lon_source = FileSource(
-    path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
+    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
+    path="../data/house_dataset_lat_lon.parquet",
     timestamp_field="EventTimestamp",
     created_timestamp_column="Created",
 )

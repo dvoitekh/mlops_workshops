@@ -1,1 +1,1 @@
-feast[aws,redis]
+feast[aws,redis]==0.21.3

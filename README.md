@@ -1,71 +1,79 @@
-# Local K8s cluster with Kubeflow, Seldon, and Feast (Ubuntu)
+# MLOps Mini-Course 2022
 
-1. install (docker)[https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04]
+This is a compact but all-encompassing set of workshops to practice cloud-native MLOps tools like (Kubeflow)[https://www.kubeflow.org/], (Pachyderm)[https://www.pachyderm.com/], (Feast)[https://feast.dev/], and (Seldon)[https://www.seldon.io]. All this experiments are intended to run in k8s environment. It's recommended to use Minikube deployed on Linux server (minimum 12 GB RAM, 2 CPU, 50 GB of disk space).
 
-    increase max limit for open file descriptors: https://github.com/kubeflow/manifests/issues/2087#issuecomment-1101482095
+## Environment setup
 
-2. install (kubectl)[https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/]
+1. Launch a server or use your own computer if it satisfies the aforementioned requirements.
 
-3. install (kustomize 3.2.0)[https://github.com/kubernetes-sigs/kustomize/releases/tag/v3.2.0]
+2. Install (Docker)[https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04]. Since we'll deploy a lot of things, make sure that you increased the (max limit for open file descriptors)[https://github.com/kubeflow/manifests/issues/2087#issuecomment-1101482095].
 
-4. start local k8s cluster via (minikube)[https://minikube.sigs.k8s.io/docs/start/]
+2. Install (kubectl)[https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/]
+
+3. Install (kustomize 3.2.0)[https://github.com/kubernetes-sigs/kustomize/releases/tag/v3.2.0]
+
+4. Install (helm)[https://helm.sh/docs/intro/install]
+
+5. Install (Minikube)[https://minikube.sigs.k8s.io/docs/start/]. You will also need to (enable Docker to run as a non-root user)[https://docs.docker.com/engine/security/rootless/]
+
+6. Start a local k8s cluster (the following k8s version since Kubeflow is not yet compatible with latest k8s versions):
 
     ```bash
     minikube start --kubernetes-version=v1.20.2 --memory 30000 --cpus 4
     ```
 
-5. clone repo and install (kubeflow)[https://github.com/kubeflow/manifests]
+7. Verify that it works by checking available pods. Also you can launch a dashboard:
 
-    (test installation)[https://www.kubeflow.org/docs/components/central-dash/overview]
+    ```bash
+    kubectl get po --all-namespaces
+    minikube dashboard
+    ```
 
-6. install (feast)[https://github.com/kubeflow/manifests/tree/master/contrib/feast]
+8. Now let's install Kubeflow. Clone the (official repo with manifests)[https://github.com/kubeflow/manifests] and install them:
 
-    architecture: https://docs.feast.dev/project/feast-0.9-vs-feast-0.10+
+    ```bash
+        while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
+    ```
 
-7. install (seldon)[https://github.com/kubeflow/manifests/tree/master/contrib/seldon]
+9. Also, let's use the same repo to install (Feast manifests)[https://github.com/kubeflow/manifests/tree/master/contrib/feast] and (Seldon manifests)[https://github.com/kubeflow/manifests/tree/master/contrib/seldon]
 
-    (test installation)[https://www.kubeflow.org/docs/external-add-ons/serving/seldon]
+10. Verify installation by (proxying istio gateway to local port)[https://www.kubeflow.org/docs/components/central-dash/overview] and by checking pods within your cluster. You can login to the Kubeflow dashboard with the following credentials - `user@example.com / 12341234`
 
-## Katib for hyperopt
+11. Also, we'll need to install Pachyderm locally. Use (this installation guide)[https://www.google.com/url?q=https://docs.pachyderm.com/latest/getting-started/local-installation&sa=D&source=editors&ust=1655296135088959&usg=AOvVaw1Lel4BjoQ4hHS93eZQbniC]. However, it's preferred to create a separate namespace for the service (e.g. `pachdyderm`)
 
-1. (Getting started)[https://www.kubeflow.org/docs/components/katib/hyperparameter], (github link)[https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/mxnet-mnist]
+## Kubernetes basics
 
-2. (PyTorch example)[https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/pytorch-mnist]
+Visit the (kubernetes directory)[kubernetes/] and deploy a basic application with Service and HPA:
 
-3. (PyTorch training job)[https://github.com/kubeflow/pytorch-operator/tree/master/examples/mnist]
-
-## Feast
-
-1. Show kubeflow notebooks
-
-2. Show feast architecture:
-    https://docs.feast.dev/project/feast-0.9-vs-feast-0.10+
-
-3. FeatureSource available fields:
-    https://github.com/feast-dev/feast/blob/b3ba8aaf3a87343d756a2996376865096d543515/sdk/python/feast/infra/offline_stores/file_source.py
-
-4. Workshop:
-    https://github.com/feast-dev/feast-workshop
-
-
-
-3. Example of the end-to-end feature store usage in the notebook
+    ```bash
+        kubectl apply -f .
+    ```
 
 ## Pachyderm
 
-1. Just show documentation
+Considering that you have Pachyderm installed and configured, you can run the (starter notebook)[pachyderm/].
 
-## Seldon
+After that, go to the (housing-prices)[pachyderm/housing-prices/] directory to explore how Pachyderm can be used for model training and deployment.
 
-1. Show predefined format (e.g. sklearn) serving example
+You can also enable Promethus monitoring by using the following (tutorial)[https://docs.pachyderm.com/latest/deploy-manage/deploy/prometheus/]
 
-2. Show custom model serving via Python class
+## Feast
 
-3. Show monitoring (Prometheus, Graphana)
+Open Kubeflow dashboard, create a new notebook. In the notebook clone this repo. Navigate to (feast directory)[feast/]. Current code will use local files and registry, but it can be replaced with s3 or gcs. Run the notebook to see how Feast provides ability to query features both in offline and online modes.
 
-4. Custom routers and bandits (A/B tests). Endpoints for feedback
+## Katib (hyper-parameter optimization)
 
-5. Outlier detection via Alibi Detect https://docs.seldon.io/projects/seldon-core/en/stable/examples/outlier_cifar10.html
+Get familiar with (Katib)[https://docs.pachyderm.com/latest/deploy-manage/deploy/prometheus/].
+
+Go to (katib directory)[kubeflow/katib/] and apply the basic mnist experiment:
+
+    ```bash
+        kubectl apply -f .
+    ```
+
+After than you can navigate to Katib tab in the Kubeflow dashboard and check the newly created experiment.
+
+(Code for the coresponding example)[https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/pytorch-mnist].
 
 
 
