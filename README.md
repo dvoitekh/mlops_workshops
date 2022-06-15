@@ -39,16 +39,15 @@ This is a compact but all-encompassing set of workshops to practice cloud-native
 
 10. Verify installation by [proxying istio gateway to local port](https://www.kubeflow.org/docs/components/central-dash/overview) and by checking pods within your cluster. You can login to the Kubeflow dashboard with the following credentials - `user@example.com / 12341234`
 
-11. Also, we'll need to install Pachyderm locally. Use [this installation guide](https://www.google.com/url?q=https://docs.pachyderm.com/latest/getting-started/local-installation&sa=D&source=editors&ust=1655296135088959&usg=AOvVaw1Lel4BjoQ4hHS93eZQbniC). However, it's preferred to create a separate namespace for the service (e.g. `pachdyderm`)
+11. Also, we'll need to install Pachyderm locally. Use [this installation guide](https://www.google.com/url?q=https://docs.pachyderm.com/latest/getting-started/local-installation&sa=D&source=editors&ust=1655296135088959&usg=AOvVaw1Lel4BjoQ4hHS93eZQbniC). However, it's preferred to create a separate namespace for the service (e.g. `pachdyderm`).
 
 ## Kubernetes basics
 
 Visit the [kubernetes directory](kubernetes/) and deploy a basic application with Service and HPA:
 
-
-    ```bash
-    while ! kustomize build example | kubectl apply -f -; do echo "Retrying to apply resources"; sleep 10; done
-    ```
+```bash
+kubectl apply -f .
+```
 
 
 ## Pachyderm
@@ -69,9 +68,9 @@ Get familiar with [Katib](https://docs.pachyderm.com/latest/deploy-manage/deploy
 
 Go to [katib directory](kubeflow/katib/) and apply the basic mnist experiment:
 
-    ```bash
-        kubectl apply -f .
-    ```
+```bash
+    kubectl apply -f .
+```
 
 After than you can navigate to Katib tab in the Kubeflow dashboard and check the newly created experiment.
 
