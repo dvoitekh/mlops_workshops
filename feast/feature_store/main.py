@@ -5,21 +5,36 @@ from feast.types import Float32, Int64
 
 
 main_source = FileSource(
-    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
+#     local file
     path="../data/house_dataset_main.parquet",
+
+#     pachyderm file
+    # path="s3://master.feast/house_dataset_main.parquet",
+    # s3_endpoint_override="http://localhost:30600",
+
+#     aws s3 file
+    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
+
+    timestamp_field="EventTimestamp",
+    created_timestamp_column="Created",
+)
+
+lat_lon_source = FileSource(
+#     local file
+    path="../data/house_dataset_lat_lon.parquet",
+
+#     pachyderm file
+    # path="s3://master.feast/house_dataset_lat_lon.parquet",
+    # s3_endpoint_override="http://localhost:30600",
+
+#     aws s3 file
+    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
     timestamp_field="EventTimestamp",
     created_timestamp_column="Created",
 )
 
 main_push_source = PushSource(
     name="main_push_source", batch_source=main_source,
-)
-
-lat_lon_source = FileSource(
-    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
-    path="../data/house_dataset_lat_lon.parquet",
-    timestamp_field="EventTimestamp",
-    created_timestamp_column="Created",
 )
 
 house_id = Entity(name="HouseId", join_keys=["HouseId"], value_type=ValueType.INT64,)
