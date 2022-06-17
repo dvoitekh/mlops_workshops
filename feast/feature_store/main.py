@@ -10,7 +10,7 @@ main_source = FileSource(
 
 #     pachyderm file
     path="s3://master.feast/house_dataset_main.parquet",
-    s3_endpoint_override="http://localhost:30600",
+    s3_endpoint_override="http://pachd.pachyderm.svc:30600",
 
 #     aws s3 file
     # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
@@ -25,7 +25,7 @@ lat_lon_source = FileSource(
 
 #     pachyderm file
     path="s3://master.feast/house_dataset_lat_lon.parquet",
-    s3_endpoint_override="http://localhost:30600",
+    s3_endpoint_override="http://pachd.pachyderm.svc:30600",
 
 #     aws s3 file
     # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",

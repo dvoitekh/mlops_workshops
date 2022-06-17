@@ -16,6 +16,8 @@ RUN pip install setuptools==41.2.0 pip==21.0.1 && \
 
 ADD . /app
 WORKDIR /app
+ENV HOME /app
+ENV FEAST_S3_ENDPOINT_URL http://pachd.pachyderm.svc:30600
 
 # will be overwritten by kf pipeline
 ENTRYPOINT [ "python3", "pipeline.py" ]

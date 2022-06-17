@@ -3,7 +3,7 @@ project: feature_repo
 # registry: registry.pb
 # provider: local
 
-pachyderm
+# pachyderm
 registry: s3://master.feast/registry.db
 provider: aws
 
