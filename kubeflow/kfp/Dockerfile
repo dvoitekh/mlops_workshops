@@ -1,4 +1,13 @@
-FROM smizy/scikit-learn:0.23-alpine
+FROM python:3.9.5
+
+RUN apt update && apt install -y libjemalloc-dev libboost-dev \
+                       libboost-filesystem-dev \
+                       libboost-system-dev \
+                       libboost-regex-dev \
+                       python-dev \
+                       autoconf \
+                       flex \
+                       bison
 
 ADD ./requirements.txt /tmp/requirements.txt
 

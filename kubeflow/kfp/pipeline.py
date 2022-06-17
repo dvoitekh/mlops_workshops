@@ -68,11 +68,13 @@ def data_validation(dataset_path: str, mlpipeline_ui_metadata_path: kfp.componen
     print('Dataset validation completed')
 
 
-def training(dataset_path: str):
+def training(dataset_path: str, mlpipeline_metrics_path: kfp.components.OutputPath('Metrics')):
     import pandas as pd
-    from sklearn.tree import DecisionTreeRegressor
-    from joblib import dump
+    import json
     import boto3
+    from sklearn.tree import DecisionTreeRegressor
+    from sklearn.cross_validation import cross_val_score
+    from joblib import dump
 
     TARGET_COLUMN = 'MedHouseVal'
 
@@ -80,6 +82,7 @@ def training(dataset_path: str):
     X, y = dataset.drop(columns=[TARGET_COLUMN]), dataset[TARGET_COLUMN]
 
     regressor = DecisionTreeRegressor()
+    cv_scores = cross_val_score(estimator=regressor, X=X, y=y, cv=10, n_jobs=4)
     regressor.fit(X, y)
     dump(regressor, 'model.joblib')
 
@@ -91,6 +94,17 @@ def training(dataset_path: str):
     )
 
     s3_client.upload_file('model.joblib', 'master.feast', "model.joblib")
+
+    metrics = {
+        'metrics': [{
+            'name': 'cv-mean-r-squared',
+            'numberValue': cv_scores.mean(),
+            'format': "RAW",
+        }]
+    }
+    with open(mlpipeline_metrics_path, 'w') as f:
+        json.dump(metrics, f)
+
     print('Training completed')
 
 
@@ -109,9 +123,9 @@ def pipeline_func(data_path: str):
         modes=dsl.VOLUME_MODE_RWM
     )
 
-    generate_dataset_op = comp.func_to_container_op(generate_dataset, base_image='TODO')
-    data_validation_op = comp.func_to_container_op(data_validation, base_image='TODO')
-    training_op = comp.func_to_container_op(training, base_image='TODO')
+    generate_dataset_op = comp.func_to_container_op(generate_dataset, base_image='dvoitekh/kfp_feast_pachyderm:latest')
+    data_validation_op = comp.func_to_container_op(data_validation, base_image='dvoitekh/kfp_feast_pachyderm:latest')
+    training_op = comp.func_to_container_op(training, base_image='dvoitekh/kfp_feast_pachyderm:latest')
 
     generate_dataset_container = generate_dataset_op(data_path) \
                                     .add_pvolumes({data_path: vop.volume})
@@ -125,10 +139,11 @@ def pipeline_func(data_path: str):
 
 if __name__ == '__main__':
     def random_string(length):
-        pool = string.letters + string.digits
+        pool = string.ascii_letters + string.digits
         return ''.join(random.choice(pool) for i in range(length))
 
-    client = kfp.Client(host='ml-pipeline.kubeflow.svc:8888')
+    # kubectl port-forward svc/ml-pipeline 8888 -n kubeflow
+    client = kfp.Client(host='http://localhost:3000')
 
     experiment_name = 'house_pricing_kubeflow'
     run_name = pipeline_func.__name__ + f' run {random_string(4)}'

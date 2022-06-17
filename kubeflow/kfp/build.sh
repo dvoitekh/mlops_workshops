@@ -1,5 +1,6 @@
 #!/bin/bash
 
-cp ../../feast/feature_store ./ && \
-    docker build -t kfp_feast_pachyderm . && \
-    docker push kfp_feast_pachyderm:latest
+cp -r ../../feast/feature_store ./ && \
+    docker build -t dvoitekh/kfp_feast_pachyderm . && \
+    rm -rf feature_store && \
+    docker push dvoitekh/kfp_feast_pachyderm:latest
