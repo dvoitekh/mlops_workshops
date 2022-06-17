@@ -3,7 +3,7 @@ name: Feast apply (AWS)
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   feast_apply:
