@@ -1,0 +1,18 @@
+project: feature_repo
+
+# registry: registry.pb
+# provider: local
+
+# pachyderm
+registry: s3://master.feast/registry.db
+provider: aws
+
+# aws
+# registry: s3://dvoitekh-kubeflow/feast/registry.pb
+# provider: aws
+
+offline_store:
+    type: file
+online_store:
+    type: redis
+    connection_string: "localhost:6379"
