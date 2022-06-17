@@ -1,3 +1,4 @@
+# corresponding code: https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/pytorch-mnist
 apiVersion: kubeflow.org/v1beta1
 kind: Experiment
 metadata:
