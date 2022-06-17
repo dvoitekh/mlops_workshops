@@ -1,11 +1,11 @@
 project: feature_repo
 
-registry: registry.pb
-provider: local
+# registry: registry.pb
+# provider: local
 
-# pachyderm
-# registry: s3://master.feast/registry.db
-# provider: aws
+pachyderm
+registry: s3://master.feast/registry.db
+provider: aws
 
 # aws
 # registry: s3://dvoitekh-kubeflow/feast/registry.pb
