@@ -49,6 +49,9 @@ Visit the [kubernetes directory](kubernetes/) and deploy a basic application wit
 kubectl apply -f .
 ```
 
+## Tensorboard
+
+Create a new Kubeflow Notebook (based on pytorch) and run [this sample notebook](kubeflow/tensorboard/). Afterwards, you can go to Kubeflow Tensorboard and create a new server with a PVC of the corresponding notebook pointing to the directory with logs.
 
 ## Pachyderm
 
@@ -60,7 +63,7 @@ You can also enable Promethus monitoring by using the following [tutorial](https
 
 ## Feast
 
-Open Kubeflow dashboard, create a new notebook. In the notebook clone this repo. Navigate to [feast directory](feast/). Current code will use local files and registry, but it can be replaced with s3 or gcs. Run the notebook to see how Feast provides ability to query features both in offline and online modes.
+Open Kubeflow dashboard, create a new notebook. In the notebook clone this repo. Navigate to [feast directory](feast/). Current code will use local files and registry, but it can be replaced with s3 or gcs. Run the notebook to see how Feast provides ability to query features both in the offline and online modes.
 
 ## Katib (hyper-parameter optimization)
 
