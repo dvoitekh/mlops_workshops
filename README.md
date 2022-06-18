@@ -79,6 +79,30 @@ After than you can navigate to Katib tab in the Kubeflow dashboard and check the
 
 [Code for the coresponding example](https://github.com/kubeflow/katib/tree/master/examples/v1beta1/trial-images/pytorch-mnist).
 
+## KFP (Kubeflow Pipelines)
+
+Navigate to the directory with [a sample pipeline](kubeflow/kfp/). It's integrated with Feast and Pachyderm services that were used before. You don't need to build docker image - it's already available in my public docker registry. You can run the pipeline (don't forget to port-forward ml-pipeline-ui service and change the url to localhost) or just compile it and upload it manually afterwards (disregard connection error - pipeline archive will be generated anyway):
+
+```bash
+python pipeline.py
+```
+
+## Kubeflow Kale
+
+There's a sample [Kale notebook](kubeflow/kale/) that generates a KFP pipeline for Titanic dataset classification. In order to run it:
+
+    1. Create a new Kubeflow notebook with a CUSTOM image: `gcr.io/arrikto/jupyter-kale:v0.5.0`
+
+    2. Copy the contents of the Kale demo directory to the notebook
+
+    3. Open the titanic_dataset_ml.ipynb file there and activate the Kale jupyter extension on the left bar.
+
+    4. Change the name of your mounted volume so it's used in the pipeline
+
+    5. Click "Compile and Upload" button
+
+    6. Navigate to KFP dashboard in the browser and run the pipeline
+
 
 
 
