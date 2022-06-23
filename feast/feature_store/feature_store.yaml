@@ -15,4 +15,5 @@ offline_store:
     type: file
 online_store:
     type: redis
-    connection_string: "localhost:6379"
+    # connection_string: "localhost:6379"
+    connection_string: "kf-feast-redis-master.feast.svc:6379"
