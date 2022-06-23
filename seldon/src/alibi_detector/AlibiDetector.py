@@ -1,0 +1,2 @@
+class AlibiDetector(object):
+    pass
