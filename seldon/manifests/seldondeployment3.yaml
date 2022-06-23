@@ -1,0 +1,50 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: seldon-pipeline
+spec:
+  annotations:
+    seldon.io/headless-svc: "true"
+  name: seldon-pipeline
+  predictors:
+    - componentSpecs:
+        - spec:
+            containers:
+              - env:
+                - name: MODEL_NAME
+                  value: src.Preprocessor
+                image: dvoitekh/seldon_feast:workshop9
+                imagePullPolicy: Always
+                name: preprocessor
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+              - env:
+                - name: MODEL_NAME
+                  value: src.Regressor
+                image: dvoitekh/seldon_feast:workshop9
+                imagePullPolicy: Always
+                name: regressor
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+            terminationGracePeriodSeconds: 1
+      graph:
+        name: preprocessor
+        type: MODEL
+        children:
+        - name: regressor
+          type: MODEL
+          children: []
+      name: model
+      replicas: 1
+      labels:
+        version: v1

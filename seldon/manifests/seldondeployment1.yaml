@@ -1,0 +1,66 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: seldon-preprocessor
+spec:
+  annotations:
+    seldon.io/headless-svc: "true"
+  name: seldon-preprocessor
+  predictors:
+    - componentSpecs:
+        - pdbSpec:
+            maxUnavailable: 1
+          hpaSpec:
+            minReplicas: 1
+            maxReplicas: 2
+            metrics:
+            - resource:
+                name: cpu
+                targetAverageUtilization: 20
+              type: Resource
+          spec:
+            containers:
+              - env:
+                - name: MODEL_NAME
+                  value: src.Preprocessor
+                image: dvoitekh/seldon_feast:workshop9
+                imagePullPolicy: Always
+                name: model
+                livenessProbe:
+                  failureThreshold: 3
+                  periodSeconds: 20
+                  successThreshold: 1
+                  initialDelaySeconds: 60
+                  timeoutSeconds: 70
+                  httpGet:
+                    path: /health/status
+                    port: http
+                    scheme: HTTP
+                readinessProbe:
+                  failureThreshold: 3
+                  periodSeconds: 20
+                  successThreshold: 1
+                  initialDelaySeconds: 60
+                  timeoutSeconds: 70
+                  httpGet:
+                    path: /health/status
+                    port: http
+                    scheme: HTTP
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+            terminationGracePeriodSeconds: 1
+      graph:
+        children: []
+        name: model
+        type: MODEL
+        endpoint:
+          type: GRPC
+      name: model
+      replicas: 1
+      labels:
+        version: v1

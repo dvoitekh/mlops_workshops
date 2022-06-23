@@ -1,0 +1,36 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: seldon-regressor
+spec:
+  annotations:
+    seldon.io/headless-svc: "true"
+  name: seldon-regressor
+  predictors:
+    - componentSpecs:
+        - spec:
+            containers:
+              - env:
+                - name: MODEL_NAME
+                  value: src.Regressor
+                image: dvoitekh/seldon_feast:workshop9
+                imagePullPolicy: Always
+                name: model
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+            terminationGracePeriodSeconds: 1
+      graph:
+        children: []
+        name: model
+        type: MODEL
+        endpoint:
+          type: GRPC
+      name: model
+      replicas: 1
+      labels:
+        version: v1
