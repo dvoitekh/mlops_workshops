@@ -1,28 +1,20 @@
 apiVersion: machinelearning.seldon.io/v1
 kind: SeldonDeployment
 metadata:
-  name: seldon-pipeline
+  name: seldon-ab-test
 spec:
   annotations:
     seldon.io/headless-svc: "true"
-  name: seldon-pipeline
+  name: seldon-ab-test
   predictors:
     - componentSpecs:
-        - spec:
+        - pdbSpec:
+            maxUnavailable: 1
+          spec:
             containers:
               - env:
                 - name: MODEL_NAME
                   value: src.Preprocessor
-                - name: TRACING
-                  value: '1'
-                - name: JAEGER_AGENT_HOST
-                  value: simplest-agent.jaeger.svc
-                - name: JAEGER_AGENT_PORT
-                  value: '5775'
-                - name: JAEGER_SAMPLER_TYPE
-                  value: const
-                - name: JAEGER_SAMPLER_PARAM
-                  value: '1'
                 image: dvoitekh/seldon_feast:workshop13
                 imagePullPolicy: Always
                 name: preprocessor
@@ -36,19 +28,22 @@ spec:
               - env:
                 - name: MODEL_NAME
                   value: src.Regressor
-                - name: TRACING
-                  value: '1'
-                - name: JAEGER_AGENT_HOST
-                  value: simplest-agent.jaeger.svc
-                - name: JAEGER_AGENT_PORT
-                  value: '5775'
-                - name: JAEGER_SAMPLER_TYPE
-                  value: const
-                - name: JAEGER_SAMPLER_PARAM
-                  value: '1'
                 image: dvoitekh/seldon_feast:workshop13
                 imagePullPolicy: Always
-                name: regressor
+                name: model1
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+              - env:
+                - name: MODEL_NAME
+                  value: src.Regressor
+                image: dvoitekh/seldon_feast:workshop14
+                imagePullPolicy: Always
+                name: model2
                 resources:
                   requests:
                     memory: '500Mi'
@@ -61,10 +56,21 @@ spec:
         name: preprocessor
         type: MODEL
         children:
-        - name: regressor
-          type: MODEL
-          children: []
-      name: model
+        - name: ab-test
+          implementation: RANDOM_ABTEST
+          endpoint: {}
+          parameters:
+          - name: ratioA
+            value: '0.5'
+            type: FLOAT
+          children:
+            - name: model1
+              type: MODEL
+              children: []
+            - name: model2
+              type: MODEL
+              children: []
+      name: ab-test
       replicas: 1
-      labels:
-        version: v1
+      annotations:
+        predictor_version: v1

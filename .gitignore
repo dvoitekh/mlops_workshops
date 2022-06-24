@@ -12,3 +12,5 @@ tmp/
 .env
 .python-version
 *.swp
+*.joblib
+*.zip

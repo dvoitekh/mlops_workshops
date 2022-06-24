@@ -1,0 +1,100 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: seldon-router
+spec:
+  annotations:
+    seldon.io/headless-svc: "true"
+  name: seldon-router
+  predictors:
+    - componentSpecs:
+        - pdbSpec:
+            maxUnavailable: 1
+          spec:
+            containers:
+              - env:
+                - name: MODEL_NAME
+                  value: src.Preprocessor
+                image: dvoitekh/seldon_feast:workshop13
+                imagePullPolicy: Always
+                name: preprocessor
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+              - env:
+                - name: MODEL_NAME
+                  value: src.Regressor
+                image: dvoitekh/seldon_feast:workshop13
+                imagePullPolicy: Always
+                name: model1
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+              - env:
+                - name: MODEL_NAME
+                  value: src.Regressor
+                image: dvoitekh/seldon_feast:workshop14
+                imagePullPolicy: Always
+                name: model2
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+              - env:
+                - name: MODEL_NAME
+                  value: src.Router
+                image: dvoitekh/seldon_feast:workshop13
+                imagePullPolicy: Always
+                name: router
+                resources:
+                  requests:
+                    memory: '500Mi'
+                    cpu: '500m'
+                  limits:
+                    memory: '1000Mi'
+                    cpu: '1000m'
+            terminationGracePeriodSeconds: 1
+      graph:
+        name: preprocessor
+        type: MODEL
+        children:
+        - name: router
+          type: ROUTER
+          children:
+          - name: model1
+            type: MODEL
+          - name: model2
+            type: MODEL
+          name: router
+          parameters:
+          - name: n_branches
+            type: INT
+            value: '2'
+          - name: branch_names
+            type: STRING
+            value: model1:model2
+          - name: branch_probabilities
+            type: STRING
+            value: 0.5:0.5
+          - name: seed
+            type: INT
+            value: '1'
+      name: router
+      replicas: 1
+      svcOrchSpec:
+        env:
+        - name: SELDON_ENABLE_ROUTING_INJECTION
+          value: 'true'
+      labels:
+        version: v1

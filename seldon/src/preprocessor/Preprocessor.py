@@ -3,11 +3,7 @@ import logging
 import os
 from joblib import load
 
-# python component details:
-# https://docs.seldon.io/projects/seldon-core/en/latest/python/python_component.html
 
-# model,combiner,router:
-# https://docs.seldon.io/projects/seldon-core/en/latest/examples/graph-metadata.html#Two-Level-Graph
 class Preprocessor(object):
     def __init__(self):
         self.feature_store = feast.FeatureStore(
@@ -33,16 +29,7 @@ class Preprocessor(object):
 
     def predict(self, X, features_names):
         online_features = self.feature_store.get_online_features(
-            features=[
-                "house_main_view:MedInc",
-                "house_main_view:HouseAge",
-                "house_main_view:AveRooms",
-                "house_main_view:AveBedrms",
-                "house_main_view:Population",
-                "house_main_view:AveOccup",
-                "house_lat_lon_view:Latitude",
-                "house_lat_lon_view:Longitude"
-            ],
+            features=self.class_names(),
             entity_rows=[
                 {"HouseId": x[0]} for x in X
             ]

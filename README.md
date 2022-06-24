@@ -91,20 +91,19 @@ python pipeline.py
 
 There's a sample [Kale notebook](kubeflow/kale/) that generates a KFP pipeline for Titanic dataset classification. In order to run it:
 
-    1. Create a new Kubeflow notebook with a CUSTOM image: `gcr.io/arrikto/jupyter-kale:v0.5.0`
+1. Create a new Kubeflow notebook with a CUSTOM image: `gcr.io/arrikto/jupyter-kale:v0.5.0`
 
-    2. Copy the contents of the Kale demo directory to the notebook
+2. Copy the contents of the Kale demo directory to the notebook
 
-    3. Open the titanic_dataset_ml.ipynb file there and activate the Kale jupyter extension on the left bar.
+3. Open the titanic_dataset_ml.ipynb file there and activate the Kale jupyter extension on the left bar.
 
-    4. Change the name of your mounted volume so it's used in the pipeline
+4. Change the name of your mounted volume so it's used in the pipeline
 
-    5. Click "Compile and Upload" button
+5. Click "Compile and Upload" button
 
-    6. Navigate to KFP dashboard in the browser and run the pipeline
-
-
+6. Navigate to KFP dashboard in the browser and run the pipeline
 
 
+## Seldon
 
-
+After you have configured the KFP pipeline, we can use the same data to run Seldon services. Open [Seldon notebook](seldon/) and run all the deployments. You can also explore the code for all components in [this directory](seldon/src/).

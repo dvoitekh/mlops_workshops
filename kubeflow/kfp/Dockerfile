@@ -1,4 +1,5 @@
-FROM python:3.9.5
+# python 3.9 isn't fully supported by seldon: https://github.com/SeldonIO/seldon-core/issues/3720
+FROM python:3.7.12
 
 RUN apt update && apt install -y libjemalloc-dev libboost-dev \
                        libboost-filesystem-dev \
@@ -7,7 +8,10 @@ RUN apt update && apt install -y libjemalloc-dev libboost-dev \
                        python-dev \
                        autoconf \
                        flex \
-                       bison
+                       bison \
+                       ffmpeg \
+                       libsm6 \
+                       libxext6
 
 ADD ./requirements.txt /tmp/requirements.txt
 
