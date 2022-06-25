@@ -9,11 +9,11 @@ main_source = FileSource(
     # path="../data/house_dataset_main.parquet",
 
 #     pachyderm file
-    path="s3://master.feast/house_dataset_main.parquet",
-    s3_endpoint_override="http://pachd.pachyderm.svc:30600",
+    # path="s3://master.feast/house_dataset_main.parquet",
+    # s3_endpoint_override="http://pachd.pachyderm.svc:30600",
 
 #     aws s3 file
-    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
+    path="s3://dvoitekh-kubeflow/feast/data/house_dataset_main.parquet",
 
     timestamp_field="EventTimestamp",
     created_timestamp_column="Created",
@@ -24,18 +24,18 @@ lat_lon_source = FileSource(
     # path="../data/house_dataset_lat_lon.parquet",
 
 #     pachyderm file
-    path="s3://master.feast/house_dataset_lat_lon.parquet",
-    s3_endpoint_override="http://pachd.pachyderm.svc:30600",
+    # path="s3://master.feast/house_dataset_lat_lon.parquet",
+    # s3_endpoint_override="http://pachd.pachyderm.svc:30600",
 
 #     aws s3 file
-    # path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
+    path="s3://dvoitekh-kubeflow/feast/data/house_dataset_lat_lon.parquet",
     timestamp_field="EventTimestamp",
     created_timestamp_column="Created",
 )
 
-main_push_source = PushSource(
-    name="main_push_source", batch_source=main_source,
-)
+# main_push_source = PushSource(
+#     name="main_push_source", batch_source=main_source,
+# )
 
 house_id = Entity(name="HouseId", join_keys=["HouseId"], value_type=ValueType.INT64,)
 
@@ -52,7 +52,7 @@ house_main_view = FeatureView(
         Field(name="MedHouseVal", dtype=Float32)
     ],
     online=True,
-    source=main_push_source
+    source=main_source
 )
 
 house_lat_lon_view = FeatureView(

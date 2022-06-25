@@ -4,16 +4,16 @@ project: feature_repo
 # provider: local
 
 # pachyderm
-registry: s3://master.feast/registry.db
-provider: aws
+# registry: s3://master.feast/registry.db
+# provider: aws
 
 # aws
-# registry: s3://dvoitekh-kubeflow/feast/registry.pb
-# provider: aws
+registry: s3://dvoitekh-kubeflow/feast/registry.pb
+provider: aws
 
 offline_store:
     type: file
 online_store:
     type: redis
-    # connection_string: "localhost:6379"
-    connection_string: "kf-feast-redis-master.feast.svc:6379"
+    connection_string: "localhost:6379"
+    # connection_string: "kf-feast-redis-master.feast.svc:6379"
