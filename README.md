@@ -107,3 +107,8 @@ There's a sample [Kale notebook](kubeflow/kale/) that generates a KFP pipeline f
 ## Seldon
 
 After you have configured the KFP pipeline, we can use the same data to run Seldon services. Open [Seldon notebook](seldon/) and run all the deployments. You can also explore the code for all components in [this directory](seldon/src/).
+
+
+## ANN indexing (NMSLIB and Scann)
+
+Go to [ann demo directory](ann/) and explore how NMSLIB and Google Scann can solve the vector indexing problem.
